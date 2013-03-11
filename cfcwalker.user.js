@@ -31,16 +31,17 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
 	if (/http:\/\/((.*)\.)?codeforces.(ru|com)\/blog\/entry\/.*/.test(w.location.href)){
 		//Below is the userscript code itself
     function update() {
+		var sz = blocks.size();
       if (cur < 0) {
-        counter.text(blocks.size() + ' new');
+        counter.text(sz);
+		if (sz == 0) $(".cfcwalker").css('display', 'none');
         $('#cfcwalker_prev, #cfcwalker_next').css('visibility', 'hidden');
         return;
       }
 
-      if (cur < 1) cur = 1;
-      if (cur > blocks.size()) cur = blocks.size();
+	  cur = Math.min(Math.max(cur, 1), sz);
       $('#cfcwalker_prev').css('visibility', cur > 1 ? 'visible' : 'hidden');
-      $('#cfcwalker_next').css('visibility', cur < blocks.size() ? 'visible' : 'hidden');
+      $('#cfcwalker_next').css('visibility', cur < sz ? 'visible' : 'hidden');
 
       counter.text(cur + '/' + blocks.size());
       b = $(blocks[cur - 1]);
@@ -87,10 +88,18 @@ f.event={add:function(a,c,d,e,g){var h,i,j,k,l,m,n,o,p,q,r,s;if(!(a.nodeType===3
     $('body').append('\
 <style type="text/css">\
   .cfcwalker { position: fixed; right: 4px; top: 50%; margin: 0; padding: 0; text-align: center; }\
+  .cfcwalker a {color: blue; text-decoration: none; cursor: pointer;}\
+  .cfcwalker a:hover {text-decoration: none;}\
+  .cfcwalker a:visited {text-decoration: none;}\
   #cfcwalker_counter { font-weight: bold; }\
-  .cfcwalker img {opacity: 0.5;}\
-  .cfcwalker img:hover {opacity: 1}\
+  #cfcwalker_prev {opacity: 0.5; width : 100%; minwidth : 24px; height : 24px; margin-bottom : 3px; cursor : pointer; background: url(' + root + 'uparrow.png) no-repeat center;}\
+  #cfcwalker_prev:hover {opacity: 1}\
+  #cfcwalker_next {opacity: 0.5; width : 100%; minwidth : 24px; height : 24px; margin-top : 3px; cursor : pointer; background: url(' + root + 'downarrow.png) no-repeat center;}\
+  #cfcwalker_next:hover {opacity: 1}\
 </style> \
-<div style="display:none;" class="cfcwalker"><div><img src="' + root + '/uparrow.png" id="cfcwalker_prev" alt="Prev"/></div><div><a href="javascript:" id="cfcwalker_counter">0</a></div><div><img src="' + root + '/downarrow.png" id="cfcwalker_next" alt="Next"/></div></div>');
+<div style="display:none;" class="cfcwalker" align = "center">\
+	<div id="cfcwalker_prev"></div>\
+	<div><a href = "javascript:;" id="cfcwalker_counter" style = "font-family : Open Sans, Segoe UI, Arial, Verdana, Tahoma, sans-serif; background-color : #FFC300; padding : 3px; border-radius : 4px;">0</a></div>\
+	<div id="cfcwalker_next"></div></div>');
 	}
 })(window);
